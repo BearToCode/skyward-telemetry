@@ -1,0 +1,8 @@
+{
+  "cSpell.words": [
+    "threlte"
+  ],
+  "[svelte]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
+}
