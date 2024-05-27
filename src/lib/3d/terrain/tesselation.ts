@@ -1,31 +1,21 @@
 import { Vector2, Matrix3 } from 'three'
+import type { Triangle2D } from './types'
 
-const patchesCount = 1
-const patchesSubdivisions = 4
-const patchesSegmentReduction = 1 / 3
+const patchesCount = 3
+const patchesSubdivisions = 12
+const patchesSegmentationFactor = 3
 
-export type GeoPosition = {
-	lat: number
-	lon: number
-}
-
-export type Triangle2D = {
-	a: Vector2
-	b: Vector2
-	c: Vector2
-}
-
-export class Terrain {
+export class Tesselation {
 	private segmentLength = 1
 	private edgeSegments = 1
-	private triangles: Triangle2D[] = []
 	private cursor: Vector2 = new Vector2(0, 0)
 	private cursorFlip: 'up' | 'down' = 'down'
 	private cursorDirection = 0
 
+	public readonly triangles: Triangle2D[] = []
+
 	constructor() {
 		this.generate()
-		console.log(this.triangles)
 	}
 
 	private generate() {
@@ -34,6 +24,7 @@ export class Terrain {
 			for (let subdivision = 0; subdivision < patchesSubdivisions; subdivision++) {
 				this.extendPatch()
 			}
+			this.endPatch()
 		}
 	}
 
@@ -44,50 +35,77 @@ export class Terrain {
 			this.rotateCursor()
 		}
 		this.edgeSegments += 2
+		// Move the cursor up left
+		this.cursor.add(
+			new Vector2(
+				-this.segmentLength * Math.sin(Math.PI / 6),
+				this.segmentLength * Math.cos(Math.PI / 6)
+			)
+		)
 	}
 
 	private startPatch() {
 		this.cursorDirection = 0
 		this.cursorFlip = 'down'
-		this.segmentLength = this.edgeSegments * this.segmentLength * patchesSegmentReduction
-		this.edgeSegments *= patchesSegmentReduction
 	}
 
+	private endPatch() {
+		const currentSegments = (this.edgeSegments - 1) / 2
+		const f = patchesSegmentationFactor * 2 + 1
+		this.edgeSegments = f
+		this.segmentLength = (this.segmentLength * currentSegments) / patchesSegmentationFactor
+	}
+
+	/**
+	 * Generates an edge of the patch
+	 */
 	private generateEdge() {
+		this.cursorFlip = 'down' as 'up' | 'down'
 		for (let segment = 0; segment < this.edgeSegments; segment++) {
-			if (this.cursorFlip == 'up') {
-				const position = this.cursor
+			switch (this.cursorFlip) {
+				case 'up': {
+					const position = this.cursor.clone()
 
-				// Advance by edgeLength / 2 along the edge
-				const edgeMat = this.getRotationMatrix(this.cursorDirection)
-				position.add(new Vector2(this.segmentLength / 2, 0).applyMatrix3(edgeMat))
+					// Move the position segmentLength/2 forward, segmentLength * cos(30) up
+					const translation = new Vector2(
+						this.segmentLength / 2,
+						this.segmentLength * Math.cos(Math.PI / 6)
+					)
+					// Rotate the translation
+					translation.applyMatrix3(this.getRotationMatrix(-this.cursorDirection))
 
-				// Advance by edge * sin(60deg) along the perpendicular to the edge
-				const perpendicularMat = this.getRotationMatrix(this.cursorDirection - 90)
-				position.add(
-					new Vector2(this.segmentLength * Math.sin(Math.PI / 3), 0).applyMatrix3(perpendicularMat)
-				)
+					position.add(translation)
 
-				// Generate the flipped triangle
-				this.generateTriangle(position, this.cursorDirection + 180)
-			} else if (this.cursorFlip == 'down') {
-				this.generateTriangle(this.cursor, this.cursorDirection)
+					// Generate the flipped triangle
+					this.generateTriangle(position, this.cursorDirection + 180)
+					break
+				}
+				case 'down': {
+					this.generateTriangle(this.cursor, this.cursorDirection)
+					break
+				}
 			}
 			this.advanceCursor()
 		}
 	}
 
+	/**
+	 * Advances the cursor along the edge
+	 */
 	private advanceCursor() {
-		if (this.cursorFlip == 'up') {
-			this.cursorFlip = 'down'
-		} else if (this.cursorFlip == 'down') {
+		if (this.cursorFlip == 'down') {
 			this.cursorFlip = 'up'
-			const mat = this.getRotationMatrix(this.cursorDirection)
+		} else if (this.cursorFlip == 'up') {
+			this.cursorFlip = 'down'
+			const mat = this.getRotationMatrix(-this.cursorDirection)
 			const dir = new Vector2(this.segmentLength, 0).applyMatrix3(mat)
 			this.cursor.add(dir)
 		}
 	}
 
+	/**
+	 * Rotates the cursor by 60 degrees
+	 */
 	private rotateCursor() {
 		this.cursorDirection += 60
 	}
@@ -112,13 +130,14 @@ export class Terrain {
 	 * @param deg The rotation of the triangle in degrees
 	 */
 	private generateTriangle(pos: Vector2, deg: number) {
-		const mat = this.getRotationMatrix(deg)
+		const mat = this.getRotationMatrix(-deg)
 
 		const base: Triangle2D = {
 			a: new Vector2(0, 0),
 			b: new Vector2(-Math.sin(Math.PI / 6), Math.cos(Math.PI / 6)),
 			c: new Vector2(Math.sin(Math.PI / 6), Math.cos(Math.PI / 6))
 		}
+
 		// Rotate the triangle
 		const rotated: Triangle2D = {
 			a: base.a.applyMatrix3(mat),
@@ -131,6 +150,7 @@ export class Terrain {
 			b: new Vector2(rotated.b.x * this.segmentLength, rotated.b.y * this.segmentLength),
 			c: new Vector2(rotated.c.x * this.segmentLength, rotated.c.y * this.segmentLength)
 		}
+
 		// Move the triangle
 		const moved: Triangle2D = {
 			a: new Vector2(scaled.a.x + pos.x, scaled.a.y + pos.y),

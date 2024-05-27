@@ -1,57 +1,40 @@
 <script lang="ts">
 	import { T } from '@threlte/core'
-	import { Edges } from '@threlte/extras'
-	import * as THREE from 'three'
-	import type { Terrain } from '../terrain'
+	import { OrbitControls } from '@threlte/extras'
 	import TerrainMesh from './TerrainMesh.svelte'
+	import type { Terrain } from '../terrain/types'
 
 	export let terrain: Terrain
+
+	let autoRotate: boolean = false
+	let enableDamping: boolean = true
+	let rotateSpeed: number = 1
+	let zoomToCursor: boolean = false
+	let zoomSpeed: number = 1
+	let minPolarAngle: number = 0
+	let maxPolarAngle: number = Math.PI
+	let enableZoom: boolean = true
 </script>
+
+<T.DirectionalLight position={[0, 10, 10]} />
 
 <T.PerspectiveCamera
 	makeDefault
 	position={[10, 10, 10]}
 	on:create={({ ref }) => {
-		ref.lookAt(0, 1, 0)
+		ref.lookAt(0, 0, 0)
 	}}
-/>
-
-<T.Mesh position.y={1}>
-	<T.BoxGeometry args={[1, 2, 1]} />
-	<T.MeshBasicMaterial color="hotpink" />
-</T.Mesh>
-
-<T.Mesh position.x={2}>
-	<T.BufferGeometry
-		attributes={{
-			position: new THREE.BufferAttribute(
-				new Float32Array([
-					-1.0,
-					-1.0,
-					1.0, // v0
-					1.0,
-					-1.0,
-					1.0, // v1
-					1.0,
-					1.0,
-					1.0, // v2
-
-					1.0,
-					1.0,
-					1.0, // v3
-					-1.0,
-					1.0,
-					1.0, // v4
-					-1.0,
-					-1.0,
-					1.0 // v5
-				]),
-				3
-			)
-		}}
+>
+	<OrbitControls
+		{enableDamping}
+		{autoRotate}
+		{rotateSpeed}
+		{zoomToCursor}
+		{zoomSpeed}
+		{minPolarAngle}
+		{maxPolarAngle}
+		{enableZoom}
 	/>
-	<T.MeshBasicMaterial color="orange" />
-	<Edges color="black" />
-</T.Mesh>
+</T.PerspectiveCamera>
 
 <TerrainMesh {terrain} />

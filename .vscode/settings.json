@@ -1,8 +1,6 @@
 {
-  "cSpell.words": [
-    "threlte"
-  ],
-  "[svelte]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  }
+	"cSpell.words": ["threlte", "Topo", "wireframe"],
+	"[svelte]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	}
 }
