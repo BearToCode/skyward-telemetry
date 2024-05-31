@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { T } from '@threlte/core'
-	import { OrbitControls } from '@threlte/extras'
-	import TerrainMesh from './TerrainMesh.svelte'
+	import { OrbitControls, Gizmo } from '@threlte/extras'
 	import type { Terrain } from '../terrain/types'
+	import TerrainMesh from './TerrainMesh.svelte'
 
 	export let terrain: Terrain
 
@@ -12,15 +12,15 @@
 	let zoomToCursor: boolean = false
 	let zoomSpeed: number = 1
 	let minPolarAngle: number = 0
-	let maxPolarAngle: number = Math.PI
+	let maxPolarAngle: number = 1.45
 	let enableZoom: boolean = true
 </script>
 
-<T.DirectionalLight position={[0, 10, 10]} />
+<T.AmbientLight intensity={0.3} />
 
 <T.PerspectiveCamera
 	makeDefault
-	position={[10, 10, 10]}
+	position={[10, 3, 10]}
 	on:create={({ ref }) => {
 		ref.lookAt(0, 0, 0)
 	}}
@@ -38,3 +38,5 @@
 </T.PerspectiveCamera>
 
 <TerrainMesh {terrain} />
+
+<Gizmo paddingX={10} paddingY={10} />

@@ -37,6 +37,9 @@
 	"dependencies": {
 		"@threlte/core": "^7.3.0",
 		"@threlte/extras": "^8.11.2",
+		"iconify-icon": "^2.1.0",
+		"svelte-tweakpane-ui": "^1.2.7",
+		"sveltekit-sse": "^0.13.0",
 		"three": "^0.164.1",
 		"typescript-event-target": "^1.1.1"
 	}

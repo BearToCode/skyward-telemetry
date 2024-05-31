@@ -1,5 +1,12 @@
 {
-	"cSpell.words": ["threlte", "Topo", "wireframe"],
+	"cSpell.words": [
+		"Conrig",
+		"iconify",
+		"Pitot",
+		"threlte",
+		"Topo",
+		"wireframe"
+	],
 	"[svelte]": {
 		"editor.defaultFormatter": "esbenp.prettier-vscode"
 	}

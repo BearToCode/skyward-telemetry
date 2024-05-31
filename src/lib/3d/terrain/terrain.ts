@@ -2,6 +2,7 @@ import { Vector3, Vector2 } from 'three'
 import { Tesselation } from './tesselation'
 import { type Terrain, type GeoPosition, type Triangle3D } from './types'
 import { fetchAltitudes } from './altitude'
+import { registerTask } from '$lib/2d/loading/stores'
 
 export const terrainScale = 10
 
@@ -19,6 +20,8 @@ function altitudeToZ(altitude: number, referenceAltitude: number) {
 }
 
 export async function fetchTerrain(geo: GeoPosition): Promise<Terrain> {
+	const task = registerTask('Retrieving terrain data')
+
 	const tesselation = new Tesselation()
 
 	const triangles: Triangle3D[] = []
@@ -50,6 +53,7 @@ export async function fetchTerrain(geo: GeoPosition): Promise<Terrain> {
 		keys.slice(i * chunkSize, i * chunkSize + chunkSize)
 	)
 
+	let index = 0
 	for (const chunk of chunks) {
 		const chunkAltitudes = await fetchAltitudes(chunk.map((key) => geoPositions.get(key)!))
 		for (const [index, key] of chunk.entries()) {
@@ -59,6 +63,8 @@ export async function fetchTerrain(geo: GeoPosition): Promise<Terrain> {
 			}
 			altitudes.set(key, altitude)
 		}
+
+		task.setProgress(index++ / chunks.length)
 	}
 
 	for (const triangle2D of tesselation.triangles) {

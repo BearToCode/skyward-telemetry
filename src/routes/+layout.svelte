@@ -1,7 +1,8 @@
 <script lang="ts">
-  import "../app.css";
+	import 'iconify-icon'
+	import '../app.css'
 </script>
 
-<main class="bg-white w-screen h-screen">
-  <slot />
+<main class="bg-white relative w-screen h-screen overflow-hidden">
+	<slot />
 </main>

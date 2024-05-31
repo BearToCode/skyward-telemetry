@@ -1,7 +1,6 @@
 <script lang="ts">
 	import * as THREE from 'three'
 	import { T } from '@threlte/core'
-	import { Edges } from '@threlte/extras'
 	import type { Terrain } from '../terrain/types'
 
 	export let terrain: Terrain
