@@ -20,7 +20,7 @@
 	onMount(() => {
 		setInterval(() => {
 			time = Date.now()
-			latency = Date.now() - serverTime
+			latency = Math.max(0, time - serverTime) // could be lower than 0 if clocks are not in sync
 		}, 100)
 	})
 
