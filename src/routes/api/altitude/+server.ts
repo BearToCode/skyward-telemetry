@@ -1,4 +1,9 @@
 import type { GeoPosition } from '$lib/3d/terrain/types.js'
+import type { Config } from '@sveltejs/adapter-vercel'
+
+export const config: Config = {
+	runtime: 'edge'
+}
 
 export async function POST(event) {
 	const positions: GeoPosition[] = await event.request.json()

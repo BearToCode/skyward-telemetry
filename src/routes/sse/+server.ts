@@ -7,7 +7,11 @@ import type {
 } from '$lib/server/remote/types'
 import { wait } from '$lib/utils/promise'
 import { produce } from 'sveltekit-sse'
+import type { Config } from '@sveltejs/adapter-vercel'
 
+export const config: Config = {
+	runtime: 'edge'
+}
 let latestMotorTimestamp = 0
 let latestGSETimestamp = 0
 let latestRocketFlightTimestamp = 0
