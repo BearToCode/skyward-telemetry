@@ -1,8 +1,7 @@
-import { Vector3, Vector2 } from 'three'
+import { Vector2 } from 'three'
 import { Tesselation } from './tesselation'
-import { type Terrain, type GeoPosition, type Triangle3D } from './types'
+import { type Terrain, type GeoPosition, type SerializableTriangle3D } from './types'
 import { fetchAltitudes } from './altitude'
-import { registerTask } from '$lib/2d/loading/stores'
 
 export const terrainScale = 10
 
@@ -20,11 +19,9 @@ function altitudeToZ(altitude: number, referenceAltitude: number) {
 }
 
 export async function fetchTerrain(geo: GeoPosition): Promise<Terrain> {
-	const task = registerTask('Retrieving terrain data')
-
 	const tesselation = new Tesselation()
 
-	const triangles: Triangle3D[] = []
+	const triangles: SerializableTriangle3D[] = []
 	let referenceAltitude: number | undefined
 
 	const geoPositions = new Map<string, GeoPosition>()
@@ -53,7 +50,7 @@ export async function fetchTerrain(geo: GeoPosition): Promise<Terrain> {
 		keys.slice(i * chunkSize, i * chunkSize + chunkSize)
 	)
 
-	let index = 0
+	console.log(`Fetching altitudes for ${keys.length} positions`)
 	for (const chunk of chunks) {
 		const chunkAltitudes = await fetchAltitudes(chunk.map((key) => geoPositions.get(key)!))
 		for (const [index, key] of chunk.entries()) {
@@ -63,27 +60,25 @@ export async function fetchTerrain(geo: GeoPosition): Promise<Terrain> {
 			}
 			altitudes.set(key, altitude)
 		}
-
-		task.setProgress(index++ / chunks.length)
 	}
 
 	for (const triangle2D of tesselation.triangles) {
 		const triangle3D = {
-			a: new Vector3(
-				triangle2D.a.x,
-				triangle2D.a.y,
-				altitudeToZ(altitudes.get(posToKey(triangle2D.a))!, referenceAltitude!)
-			),
-			b: new Vector3(
-				triangle2D.b.x,
-				triangle2D.b.y,
-				altitudeToZ(altitudes.get(posToKey(triangle2D.b))!, referenceAltitude!)
-			),
-			c: new Vector3(
-				triangle2D.c.x,
-				triangle2D.c.y,
-				altitudeToZ(altitudes.get(posToKey(triangle2D.c))!, referenceAltitude!)
-			)
+			a: {
+				x: triangle2D.a.x,
+				y: triangle2D.a.y,
+				z: altitudeToZ(altitudes.get(posToKey(triangle2D.a))!, referenceAltitude!)
+			},
+			b: {
+				x: triangle2D.b.x,
+				y: triangle2D.b.y,
+				z: altitudeToZ(altitudes.get(posToKey(triangle2D.b))!, referenceAltitude!)
+			},
+			c: {
+				x: triangle2D.c.x,
+				y: triangle2D.c.y,
+				z: altitudeToZ(altitudes.get(posToKey(triangle2D.c))!, referenceAltitude!)
+			}
 		}
 
 		triangles.push(triangle3D)

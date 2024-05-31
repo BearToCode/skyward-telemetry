@@ -31,10 +31,8 @@ export async function fetchAltitudes(positions: GeoPosition[]) {
 	}
 	lastFetch = Date.now()
 
-	const response = await fetch(`/api/altitude`, {
-		method: 'POST',
-		body: JSON.stringify(positions)
-	})
+	const params = positions.map((geo) => `${geo.lat},${geo.lon}`).join('|')
+	const response = await fetch(`https://api.opentopodata.org/v1/eudem25m?locations=${params}`)
 
 	const data: OpenTopoDataResponse = await response.json()
 	if (data.status !== 'OK') throw new Error(data.error)
