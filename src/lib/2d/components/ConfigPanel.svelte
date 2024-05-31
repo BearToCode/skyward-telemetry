@@ -1,12 +1,12 @@
 <script lang="ts">
-	import type { GeoPosition } from '$lib/3d/terrain/types'
+	import { Checkbox, Pane, ThemeUtils, Monitor, Separator } from 'svelte-tweakpane-ui'
+	import type { GeoPosition } from '$lib/server/terrain/types'
 	import type {
 		GSETelemetry,
 		MotorTelemetry,
 		RocketFlightTelemetry
 	} from '$lib/server/remote/types'
 	import { onMount } from 'svelte'
-	import { Checkbox, Pane, ThemeUtils, Monitor, Separator } from 'svelte-tweakpane-ui'
 	import { source } from 'sveltekit-sse'
 
 	let latency = 0

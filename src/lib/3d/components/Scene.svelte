@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { T } from '@threlte/core'
 	import { OrbitControls, Gizmo } from '@threlte/extras'
-	import type { Terrain } from '../terrain/types'
 	import TerrainMesh from './TerrainMesh.svelte'
+	import type { Terrain } from '$lib/server/terrain/types'
 
 	export let terrain: Terrain
 

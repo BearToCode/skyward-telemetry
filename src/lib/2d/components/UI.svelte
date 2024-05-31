@@ -7,7 +7,7 @@
 	import RocketStatsPanel from './RocketStatsPanel.svelte'
 	import PayloadStatsPanel from './PayloadStatsPanel.svelte'
 	import ConrigPanel from './ConrigPanel.svelte'
-	import type { GeoPosition } from '$lib/3d/terrain/types'
+	import type { GeoPosition } from '$lib/server/terrain/types'
 
 	let motorPanel = false
 	let gsePanel = false

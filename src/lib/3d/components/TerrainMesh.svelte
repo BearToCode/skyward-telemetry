@@ -1,7 +1,7 @@
 <script lang="ts">
 	import * as THREE from 'three'
 	import { T } from '@threlte/core'
-	import type { Terrain } from '../terrain/types'
+	import type { Terrain } from '$lib/server/terrain/types'
 
 	export let terrain: Terrain
 </script>
