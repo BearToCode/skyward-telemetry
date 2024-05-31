@@ -20,7 +20,7 @@
 		})
 </script>
 
-<Pane theme={ThemeUtils.presets.light} position="draggable" title="RocketStats">
+<Pane theme={ThemeUtils.presets.light} position="draggable" title="PayloadStats">
 	<Folder title="Liftoff" expanded={false}>
 		<Monitor value={latestTelemetry?.liftoff_max_acc ?? NaN} label="MaxAcc" />
 		<Monitor
