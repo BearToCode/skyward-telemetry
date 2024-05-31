@@ -1,7 +1,7 @@
 <script lang="ts">
 	import ConfigPanel from './ConfigPanel.svelte'
 	import MotorPanel from './MotorPanel.svelte'
-	import GsePanel from './GsePanel.svelte'
+	import GSEPanel from './GSEPanel.svelte'
 	import RocketFlightPanel from './RocketFlightPanel.svelte'
 	import PayloadFlightPanel from './PayloadFlightPanel.svelte'
 	import RocketStatsPanel from './RocketStatsPanel.svelte'
@@ -36,7 +36,7 @@
 {/if}
 
 {#if gsePanel}
-	<GsePanel />
+	<GSEPanel />
 {/if}
 
 {#if rocketFlightPanel}
