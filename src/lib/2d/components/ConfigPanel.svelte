@@ -9,7 +9,7 @@
 	import { onMount } from 'svelte'
 	import { source } from 'sveltekit-sse'
 
-	let latency = 0
+	let latencies = new Array(10).fill(0)
 	let time = Date.now()
 	let serverTime = NaN
 	let rocketTime = NaN
@@ -20,7 +20,10 @@
 	onMount(() => {
 		setInterval(() => {
 			time = Date.now()
-			latency = Math.max(0, time - serverTime) // could be lower than 0 if clocks are not in sync
+			const latency = Math.max(0, time - serverTime) // could be lower than 0 if clocks are not in sync
+			latencies.push(latency)
+			latencies.shift()
+			latencies = [...latencies]
 		}, 100)
 	})
 
@@ -116,7 +119,12 @@
 
 	<Separator />
 
-	<Monitor value={latency} label="Latency" max={10000} graph />
+	<Monitor
+		value={latencies.reduce((a, b) => a + b) / latencies.length}
+		label="Latency"
+		max={10000}
+		graph
+	/>
 	<Monitor value={time} label="Time" format={(n) => n.toFixed(0).toString()} />
 	<Monitor value={serverTime} label="ServerTime" format={(n) => n.toFixed(0).toString()} />
 	<Monitor value={rocketTime} label="RocketTime" format={(n) => n.toFixed(0).toString()} />
