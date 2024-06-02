@@ -1,13 +1,8 @@
 <script lang="ts">
 	import { Checkbox, Pane, ThemeUtils, Monitor, Separator } from 'svelte-tweakpane-ui'
 	import type { GeoPosition } from '$lib/server/terrain/types'
-	import type {
-		GSETelemetry,
-		MotorTelemetry,
-		RocketFlightTelemetry
-	} from '$lib/server/remote/types'
 	import { onMount } from 'svelte'
-	import { source } from 'sveltekit-sse'
+	import { ping, telemetry } from '$lib/sse'
 
 	let latencies = new Array(10).fill(0)
 	let latestResponse = Date.now()
@@ -28,76 +23,36 @@
 		}, 100)
 	})
 
-	source('/sse')
-		.select('PING')
-		.transform<Date | null>((msg: any) => {
-			if (msg) {
-				return new Date(JSON.parse(msg).timestamp)
-			}
-			return null
-		})
-		.subscribe((msg) => {
-			if (msg) {
-				serverTime = msg.getTime()
-				latestResponse = Date.now()
-			}
-		})
+	ping().subscribe((msg) => {
+		if (msg) {
+			serverTime = msg.getTime()
+			latestResponse = Date.now()
+		}
+	})
 
-	source('/sse')
-		.select('ROCKET_FLIGHT_TM')
-		.transform<RocketFlightTelemetry | null>((data) => {
-			if (data) {
-				return JSON.parse(data)
-			}
-			return null
-		})
-		.subscribe((data) => {
-			if (data) {
-				rocketTime = data.timestamp
-			}
-		})
+	telemetry('ROCKET_FLIGHT_TM').subscribe((data) => {
+		if (data) {
+			rocketTime = data.timestamp
+		}
+	})
 
-	source('/sse')
-		.select('PAYLOAD_FLIGHT_TM')
-		.transform<RocketFlightTelemetry | null>((data) => {
-			if (data) {
-				return JSON.parse(data)
-			}
-			return null
-		})
-		.subscribe((data) => {
-			if (data) {
-				gseTime = data.timestamp
-			}
-		})
+	telemetry('PAYLOAD_FLIGHT_TM').subscribe((data) => {
+		if (data) {
+			gseTime = data.timestamp
+		}
+	})
 
-	source('/sse')
-		.select('GSE_TM')
-		.transform<GSETelemetry | null>((data) => {
-			if (data) {
-				return JSON.parse(data)
-			}
-			return null
-		})
-		.subscribe((data) => {
-			if (data) {
-				payloadTime = data.timestamp
-			}
-		})
+	telemetry('GSE_TM').subscribe((data) => {
+		if (data) {
+			payloadTime = data.timestamp
+		}
+	})
 
-	source('/sse')
-		.select('MOTOR_TM')
-		.transform<MotorTelemetry | null>((data) => {
-			if (data) {
-				return JSON.parse(data)
-			}
-			return null
-		})
-		.subscribe((data) => {
-			if (data) {
-				motorTime = data.timestamp
-			}
-		})
+	telemetry('MOTOR_TM').subscribe((data) => {
+		if (data) {
+			motorTime = data.timestamp
+		}
+	})
 
 	export let motorPanel = false
 	export let gsePanel = false

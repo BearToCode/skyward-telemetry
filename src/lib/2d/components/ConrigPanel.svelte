@@ -1,7 +1,6 @@
 <script lang="ts">
-	import type { ConrigStateTelemetry } from '$lib/server/remote/types'
+	import { telemetry } from '$lib/sse'
 	import { Monitor, Pane, ThemeUtils } from 'svelte-tweakpane-ui'
-	import { source } from 'sveltekit-sse'
 
 	let ignition = false
 	let fillingValve = false
@@ -11,25 +10,17 @@
 	let startTars = false
 	let arm = false
 
-	source('/sse')
-		.select('MOTOR_TM')
-		.transform<ConrigStateTelemetry | null>((data) => {
-			if (data) {
-				return JSON.parse(data)
-			}
-			return null
-		})
-		.subscribe((data) => {
-			if (data) {
-				ignition = data.ignition_btn == 0
-				fillingValve = data.filling_valve_btn == 0
-				ventingValve = data.venting_valve_btn == 0
-				releasePressure = data.release_pressure_btn == 0
-				quickConnector = data.quick_connector_btn == 0
-				startTars = data.start_tars_btn == 0
-				arm = data.arm_switch == 0
-			}
-		})
+	telemetry('CONRIG_STATE_TC').subscribe((data) => {
+		if (data) {
+			ignition = data.ignition_btn == 0
+			fillingValve = data.filling_valve_btn == 0
+			ventingValve = data.venting_valve_btn == 0
+			releasePressure = data.release_pressure_btn == 0
+			quickConnector = data.quick_connector_btn == 0
+			startTars = data.start_tars_btn == 0
+			arm = data.arm_switch == 0
+		}
+	})
 </script>
 
 <Pane theme={ThemeUtils.presets.light} position="draggable" title="Conrig">

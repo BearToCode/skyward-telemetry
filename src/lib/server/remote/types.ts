@@ -228,3 +228,14 @@ export type RemoteData = {
 	PAYLOAD_FLIGHT_TM: PayloadFlightTelemetry[]
 	CONRIG_STATE_TC: ConrigStateTelemetry[]
 }
+
+export type Telemetry =
+	| MotorTelemetry
+	| GSETelemetry
+	| RocketStatsTelemetry
+	| PayloadStatsTelemetry
+	| RocketFlightTelemetry
+	| PayloadFlightTelemetry
+	| ConrigStateTelemetry
+
+export type TelemetryType = Telemetry['type']

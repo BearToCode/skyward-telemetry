@@ -1,23 +1,15 @@
 <script lang="ts">
 	import type { PayloadFlightTelemetry } from '$lib/server/remote/types'
+	import { telemetry } from '$lib/sse'
 	import { Monitor, Pane, ThemeUtils, Folder } from 'svelte-tweakpane-ui'
-	import { source } from 'sveltekit-sse'
 
 	let latestTelemetry: PayloadFlightTelemetry | null = null
 
-	source('/sse')
-		.select('ROCKET_FLIGHT_TM')
-		.transform<PayloadFlightTelemetry | null>((data) => {
-			if (data) {
-				return JSON.parse(data)
-			}
-			return null
-		})
-		.subscribe((data) => {
-			if (data) {
-				latestTelemetry = data
-			}
-		})
+	telemetry('PAYLOAD_FLIGHT_TM').subscribe((data) => {
+		if (data) {
+			latestTelemetry = data
+		}
+	})
 </script>
 
 <Pane theme={ThemeUtils.presets.light} position="draggable" title="PayloadFlight">

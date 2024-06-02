@@ -1,23 +1,15 @@
 <script lang="ts">
 	import type { RocketFlightTelemetry } from '$lib/server/remote/types'
+	import { telemetry } from '$lib/sse'
 	import { Monitor, Pane, ThemeUtils, Folder } from 'svelte-tweakpane-ui'
-	import { source } from 'sveltekit-sse'
 
 	let latestTelemetry: RocketFlightTelemetry | null = null
 
-	source('/sse')
-		.select('ROCKET_FLIGHT_TM')
-		.transform<RocketFlightTelemetry | null>((data) => {
-			if (data) {
-				return JSON.parse(data)
-			}
-			return null
-		})
-		.subscribe((data) => {
-			if (data) {
-				latestTelemetry = data
-			}
-		})
+	telemetry('ROCKET_FLIGHT_TM').subscribe((data) => {
+		if (data) {
+			latestTelemetry = data
+		}
+	})
 </script>
 
 <Pane theme={ThemeUtils.presets.light} position="draggable" title="RocketFlight">

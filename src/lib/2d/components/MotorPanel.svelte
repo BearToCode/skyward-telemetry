@@ -1,23 +1,15 @@
 <script lang="ts">
 	import type { MotorTelemetry } from '$lib/server/remote/types'
+	import { telemetry } from '$lib/sse'
 	import { Monitor, Pane, Separator, ThemeUtils } from 'svelte-tweakpane-ui'
-	import { source } from 'sveltekit-sse'
 
 	let latestTelemetry: MotorTelemetry | null = null
 
-	source('/sse')
-		.select('MOTOR_TM')
-		.transform<MotorTelemetry | null>((data) => {
-			if (data) {
-				return JSON.parse(data)
-			}
-			return null
-		})
-		.subscribe((data) => {
-			if (data) {
-				latestTelemetry = data
-			}
-		})
+	telemetry('MOTOR_TM').subscribe((data) => {
+		if (data) {
+			latestTelemetry = data
+		}
+	})
 </script>
 
 <Pane theme={ThemeUtils.presets.light} position="draggable" title="Motor">
