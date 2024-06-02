@@ -10,6 +10,7 @@
 	import { source } from 'sveltekit-sse'
 
 	let latencies = new Array(10).fill(0)
+	let latestResponse = Date.now()
 	let time = Date.now()
 	let serverTime = NaN
 	let rocketTime = NaN
@@ -20,7 +21,7 @@
 	onMount(() => {
 		setInterval(() => {
 			time = Date.now()
-			const latency = Math.max(0, time - serverTime) // could be lower than 0 if clocks are not in sync
+			const latency = time - latestResponse
 			latencies.push(latency)
 			latencies.shift()
 			latencies = [...latencies]
@@ -38,6 +39,7 @@
 		.subscribe((msg) => {
 			if (msg) {
 				serverTime = msg.getTime()
+				latestResponse = Date.now()
 			}
 		})
 
