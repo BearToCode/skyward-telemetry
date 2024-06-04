@@ -12,7 +12,12 @@
 	})
 </script>
 
-<Pane theme={ThemeUtils.presets.light} position="draggable" title="PayloadStats">
+<Pane
+	theme={ThemeUtils.presets.light}
+	position="draggable"
+	title="PayloadStats"
+	localStoreId="payload-stats"
+>
 	<Folder title="Liftoff" expanded={false}>
 		<Monitor value={latestTelemetry?.liftoff_max_acc ?? NaN} label="MaxAcc" />
 		<Monitor

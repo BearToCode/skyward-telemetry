@@ -65,7 +65,7 @@
 	export let geo: GeoPosition
 </script>
 
-<Pane theme={ThemeUtils.presets.light} position="draggable" title="Config">
+<Pane theme={ThemeUtils.presets.light} position="draggable" title="Config" localStoreId="config">
 	<Checkbox bind:value={motorPanel} label="MotorPanel" />
 	<Checkbox bind:value={gsePanel} label="GSEPanel" />
 	<Checkbox bind:value={rocketFlightPanel} label="RocketFlightPanel" />

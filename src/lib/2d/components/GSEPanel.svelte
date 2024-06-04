@@ -12,7 +12,7 @@
 	})
 </script>
 
-<Pane theme={ThemeUtils.presets.light} position="draggable" title="GSE">
+<Pane theme={ThemeUtils.presets.light} position="draggable" title="GSE" localStoreId="gse">
 	<Folder title="Sensors" expanded={false}>
 		<Monitor value={latestTelemetry?.loadcell_rocket ?? NaN} label="LoadCellRocket" />
 		<Monitor value={latestTelemetry?.loadcell_vessel ?? NaN} label="LoadCellVessel" />

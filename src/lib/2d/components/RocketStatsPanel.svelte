@@ -12,7 +12,12 @@
 	})
 </script>
 
-<Pane theme={ThemeUtils.presets.light} position="draggable" title="RocketStats">
+<Pane
+	theme={ThemeUtils.presets.light}
+	position="draggable"
+	title="RocketStats"
+	localStoreId="rocket-stats"
+>
 	<Folder title="Liftoff" expanded={false}>
 		<Monitor
 			value={latestTelemetry?.liftoff_ts ?? NaN}

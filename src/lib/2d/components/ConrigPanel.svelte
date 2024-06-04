@@ -23,7 +23,7 @@
 	})
 </script>
 
-<Pane theme={ThemeUtils.presets.light} position="draggable" title="Conrig">
+<Pane theme={ThemeUtils.presets.light} position="draggable" title="Conrig" localStoreId="conrig">
 	<Monitor value={ignition} label="Ignition" />
 	<Monitor value={fillingValve} label="FillingValve" />
 	<Monitor value={ventingValve} label="VentingValve" />

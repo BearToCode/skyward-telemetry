@@ -12,7 +12,7 @@
 	})
 </script>
 
-<Pane theme={ThemeUtils.presets.light} position="draggable" title="Motor">
+<Pane theme={ThemeUtils.presets.light} position="draggable" title="Motor" localStoreId="motor">
 	<Monitor value={latestTelemetry?.top_tank_pressure ?? NaN} label="TopTankPressure" graph />
 	<Monitor value={latestTelemetry?.bottom_tank_pressure ?? NaN} label="BottomTankPressure" graph />
 	<Monitor

@@ -12,7 +12,12 @@
 	})
 </script>
 
-<Pane theme={ThemeUtils.presets.light} position="draggable" title="PayloadFlight">
+<Pane
+	theme={ThemeUtils.presets.light}
+	position="draggable"
+	title="PayloadFlight"
+	localStoreId="payload-flight"
+>
 	<Folder title="States" expanded={false}>
 		<Monitor value={latestTelemetry?.fmm_state ?? NaN} label="FMMState" />
 		<Monitor value={latestTelemetry?.wes_state ?? NaN} label="WESState" />

@@ -12,7 +12,12 @@
 	})
 </script>
 
-<Pane theme={ThemeUtils.presets.light} position="draggable" title="RocketFlight">
+<Pane
+	theme={ThemeUtils.presets.light}
+	position="draggable"
+	title="RocketFlight"
+	localStoreId="rocket-flight"
+>
 	<Folder title="States" expanded={false}>
 		<Monitor value={latestTelemetry?.ada_state ?? NaN} label="ADAState" />
 		<Monitor value={latestTelemetry?.fmm_state ?? NaN} label="FMMState" />
